@@ -80,11 +80,9 @@ func Generate(genpkg string, roots []eval.Root, files []*codegen.File) ([]*codeg
 			// - user types generated into separate packages via "struct:pkg:path"
 			// - meta types referenced via "struct:field:type" (e.g. types.UUID)
 			if len(f.SectionTemplates) > 0 {
-				svcExpr := root.Service(name)
-				if svcExpr != nil {
-					service.AddServiceDataMetaTypeImports(f.SectionTemplates[0], svcExpr, svc.Service)
-				}
-				service.AddUserTypeImports(genpkg, f.SectionTemplates[0], svc.Service)
+				service.AddServiceDataMetaTypeImports(f.SectionTemplates[0], svc.Service)
+				service.SetUserTypeImports(genpkg, svc.Service)
+				service.AddUserTypeImports(f.SectionTemplates[0], svc.Service)
 			}
 			files = append(files, f, cli)
 			seen[name] = struct{}{}

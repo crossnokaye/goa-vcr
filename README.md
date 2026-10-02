@@ -25,8 +25,8 @@ import _ "github.com/xeger/goa-vcr/plugin/vcr"
 #   "not enough arguments in call to generator.Generate"
 # it means your installed `goa` binary is older/newer than the module.
 #
-# This repo pins goa to v3.23.4, so this is a safe invocation:
-go run goa.design/goa/v3/cmd/goa@v3.23.4 gen <design-import-path> -o .
+# This repo pins goa to v3.30.0, so this is a safe invocation:
+go run goa.design/goa/v3/cmd/goa@v3.30.0 gen <design-import-path> -o .
 ```
 
 ### Scenarios as Service layers
