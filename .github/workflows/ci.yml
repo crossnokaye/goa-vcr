@@ -19,6 +19,9 @@ jobs:
         with:
           go-version-file: go.mod
           cache: true
+          cache-dependency-path: |
+            go.sum
+            examples/toy/go.sum
 
       - name: Check formatting
         run: |
@@ -32,6 +35,10 @@ jobs:
       - name: Run vet
         run: go vet ./...
 
+      - name: Run vet (toy design)
+        working-directory: examples/toy
+        run: go vet ./design/...
+
   test:
     runs-on: ubuntu-latest
 
@@ -44,6 +51,9 @@ jobs:
         with:
           go-version-file: go.mod
           cache: true
+          cache-dependency-path: |
+            go.sum
+            examples/toy/go.sum
 
       - name: Run tests
         run: go test ./...
