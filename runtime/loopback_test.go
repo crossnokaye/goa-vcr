@@ -25,4 +25,3 @@ func TestLoopbackMiddlewareMarksContext(t *testing.T) {
 		t.Fatalf("expected loopback context")
 	}
 }
-

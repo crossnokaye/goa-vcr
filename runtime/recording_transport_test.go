@@ -114,4 +114,3 @@ func TestRecordingTransportDoesNotAutoDisableQueryVariants(t *testing.T) {
 		t.Fatalf("expected third diversified stub")
 	}
 }
-

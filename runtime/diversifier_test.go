@@ -33,4 +33,3 @@ func TestRequestDiversifierRespectsPolicyDefaults(t *testing.T) {
 		t.Fatalf("expected path then query diversifier, got %q", div)
 	}
 }
-

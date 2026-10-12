@@ -147,4 +147,3 @@ func firstHeaderValues(headers http.Header) map[string]string {
 	}
 	return out
 }
-

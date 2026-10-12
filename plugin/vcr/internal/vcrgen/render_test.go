@@ -93,13 +93,13 @@ func TestRenderServiceVCR_UnaryViewedResultWrapsWithNewViewed(t *testing.T) {
 		HasViewedResult: true,
 		Endpoints: []EndpointSpec{
 			{
-				MethodVarName:         "GetThingViewed",
-				PayloadRef:            "*toyviews.GetThingViewedPayload",
-				ResultRef:             "*toyviews.ThingWithViews",
-				IsStreaming:           false,
-				ViewedResultInitName:  "NewViewedThingWithViews",
-				ViewedResultViewName:  "",
-				Routes:                []RouteSpec{{Verb: "GET", Path: "/things/{id}/viewed"}},
+				MethodVarName:        "GetThingViewed",
+				PayloadRef:           "*toyviews.GetThingViewedPayload",
+				ResultRef:            "*toyviews.ThingWithViews",
+				IsStreaming:          false,
+				ViewedResultInitName: "NewViewedThingWithViews",
+				ViewedResultViewName: "",
+				Routes:               []RouteSpec{{Verb: "GET", Path: "/things/{id}/viewed"}},
 			},
 		},
 	}
@@ -128,4 +128,3 @@ func assertContains(t *testing.T, haystack, needle string) {
 		t.Fatalf("expected output to contain %q", needle)
 	}
 }
-

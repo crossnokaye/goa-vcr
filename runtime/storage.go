@@ -123,4 +123,3 @@ func stubKey(endpointName, diversifier string) string {
 func StubHARFileName(endpointName, diversifier string) string {
 	return stubKey(endpointName, diversifier) + ".vcr.har"
 }
-
