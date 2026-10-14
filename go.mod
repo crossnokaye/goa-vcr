@@ -1,4 +1,4 @@
-module github.com/xeger/goa-vcr
+module github.com/crossnokaye/goa-vcr
 
 go 1.25.5
 

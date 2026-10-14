@@ -1,10 +1,10 @@
-module github.com/xeger/goa-vcr/examples/toy
+module github.com/crossnokaye/goa-vcr/examples/toy
 
 go 1.25.5
 
 require (
+	github.com/crossnokaye/goa-vcr v0.0.0
 	github.com/gorilla/websocket v1.5.3
-	github.com/xeger/goa-vcr v0.0.0
 	goa.design/clue v1.2.3
 	goa.design/goa/v3 v3.23.4
 )
@@ -35,4 +35,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace github.com/xeger/goa-vcr => ../..
+replace github.com/crossnokaye/goa-vcr => ../..

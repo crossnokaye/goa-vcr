@@ -27,7 +27,7 @@ func RenderServiceVCRCLI(spec ServiceSpec) *codegen.File {
 		codegen.SimpleImport("syscall"),
 		codegen.SimpleImport("time"),
 
-		codegen.NewImport("vcrruntime", "github.com/xeger/goa-vcr/runtime"),
+		codegen.NewImport("vcrruntime", "github.com/crossnokaye/goa-vcr/runtime"),
 		codegen.NewImport("log", "goa.design/clue/log"),
 		codegen.NewImport(spec.ServicePkgName, filepath.ToSlash(filepath.Join(spec.GenPkg, spec.ServicePathName))),
 	}

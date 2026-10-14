@@ -14,11 +14,11 @@ import (
 	"strings"
 	"testing"
 
+	toyvcr "github.com/crossnokaye/goa-vcr/examples/toy/gen/http/toy/vcr"
+	toy "github.com/crossnokaye/goa-vcr/examples/toy/gen/toy"
+	toytypes "github.com/crossnokaye/goa-vcr/examples/toy/gen/types"
+	vcrruntime "github.com/crossnokaye/goa-vcr/runtime"
 	"github.com/gorilla/websocket"
-	toyvcr "github.com/xeger/goa-vcr/examples/toy/gen/http/toy/vcr"
-	toy "github.com/xeger/goa-vcr/examples/toy/gen/toy"
-	toytypes "github.com/xeger/goa-vcr/examples/toy/gen/types"
-	vcrruntime "github.com/xeger/goa-vcr/runtime"
 )
 
 func TestPlayback_PolicyWithAuthorizationClaimsIsIgnored(t *testing.T) {
