@@ -13,7 +13,7 @@ import (
 	"goa.design/goa/v3/expr"
 	httpcodegen "goa.design/goa/v3/http/codegen"
 
-	"github.com/xeger/goa-vcr/plugin/vcr/internal/vcrgen"
+	"github.com/crossnokaye/goa-vcr/plugin/vcr/internal/vcrgen"
 )
 
 func init() {

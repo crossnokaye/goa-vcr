@@ -27,7 +27,7 @@ func TestToyExample_GenerateAndRun(t *testing.T) {
 
 	// Generate code into the toy module using the standard Goa tool.
 	run(t, toy, "go", "run", "goa.design/goa/v3/cmd/goa@"+goaVersion, "gen",
-		"github.com/xeger/goa-vcr/examples/toy/design", "-o", ".")
+		"github.com/crossnokaye/goa-vcr/examples/toy/design", "-o", ".")
 
 	for _, rel := range []string{
 		"gen/toy/service.go",

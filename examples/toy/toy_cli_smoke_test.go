@@ -3,8 +3,8 @@ package toy_test
 import (
 	"testing"
 
-	toyvcr "github.com/xeger/goa-vcr/examples/toy/gen/http/toy/vcr"
-	toy "github.com/xeger/goa-vcr/examples/toy/gen/toy"
+	toyvcr "github.com/crossnokaye/goa-vcr/examples/toy/gen/http/toy/vcr"
+	toy "github.com/crossnokaye/goa-vcr/examples/toy/gen/toy"
 )
 
 func TestVCRCLI_Usage(t *testing.T) {
