@@ -11,7 +11,7 @@ import (
 
 // goaVersion is the goa release the repository pins; the generator binary
 // must match the module version or it fails to compile.
-const goaVersion = "v3.23.4"
+const goaVersion = "v3.30.0"
 
 // TestToyExample_GenerateAndRun runs the whole pipeline on examples/toy:
 // `goa gen` with the plugin linked in, then the toy module's own tests, which

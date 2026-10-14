@@ -6,7 +6,7 @@ It is a Go module of its own (`github.com/crossnokaye/goa-vcr/examples/toy`, wit
 
 ### What it proves
 
-- `go run goa.design/goa/v3/cmd/goa@v3.23.4 gen ...` generates normal Goa `gen/` + `gen/http/` output **plus** `gen/http/toy/vcr` (because the design blank-imports the plugin).
+- `go run goa.design/goa/v3/cmd/goa@v3.30.0 gen ...` generates normal Goa `gen/` + `gen/http/` output **plus** `gen/http/toy/vcr` (because the design blank-imports the plugin).
 - The generated VCR glue **compiles** and the key playback rules **work**:
   - unary scenario handler optional (fallback to stub-backed background)
   - loopback header bypasses unary scenarios
@@ -17,8 +17,8 @@ It is a Go module of its own (`github.com/crossnokaye/goa-vcr/examples/toy`, wit
 From this directory:
 
 ```bash
-# Use a Goa CLI version compatible with the repo (this repo pins goa to v3.23.4).
-go run goa.design/goa/v3/cmd/goa@v3.23.4 gen github.com/crossnokaye/goa-vcr/examples/toy/design -o .
+# Use a Goa CLI version compatible with the repo (this repo pins goa to v3.30.0).
+go run goa.design/goa/v3/cmd/goa@v3.30.0 gen github.com/crossnokaye/goa-vcr/examples/toy/design -o .
 go test ./...
 ```
 
