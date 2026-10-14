@@ -17,7 +17,7 @@ func RenderServiceVCR(spec ServiceSpec) *codegen.File {
 		codegen.SimpleImport("net/http"),
 		codegen.SimpleImport("net/url"),
 
-		codegen.NewImport("vcrruntime", "github.com/xeger/goa-vcr/runtime"),
+		codegen.NewImport("vcrruntime", "github.com/crossnokaye/goa-vcr/runtime"),
 		codegen.NewImport("goahttp", "goa.design/goa/v3/http"),
 		codegen.NewImport(spec.ServicePkgName, filepath.ToSlash(filepath.Join(spec.GenPkg, spec.ServicePathName))),
 		codegen.NewImport("httpclient", filepath.ToSlash(filepath.Join(spec.GenPkg, "http", spec.ServicePathName, "client"))),

@@ -1,6 +1,6 @@
 ## goa-vcr
 
-`github.com/xeger/goa-vcr` provides:
+`github.com/crossnokaye/goa-vcr` provides:
 
 - **`runtime/`**: transport-agnostic VCR primitives (policy, stub store, route matching, stub doer, recording transport).
 - **`plugin/vcr/`**: a Goa v3 codegen plugin that generates per-service glue into `gen/http/<service>/vcr`.
@@ -14,7 +14,7 @@ The Goa plugin model is: your plugin must be linked into the generator binary th
 1. Add a blank import in your design module (any file in the design package):
 
 ```go
-import _ "github.com/xeger/goa-vcr/plugin/vcr"
+import _ "github.com/crossnokaye/goa-vcr/plugin/vcr"
 ```
 
 2. Run generation:
@@ -37,7 +37,7 @@ The generated per-service `Scenario` implements your Goa `Service` interface. A 
 import (
     toy "<your-module>/gen/toy"
     toyvcr "<your-module>/gen/http/toy/vcr"
-    vcrruntime "github.com/xeger/goa-vcr/runtime"
+    vcrruntime "github.com/crossnokaye/goa-vcr/runtime"
 )
 
 // Background: stub-backed Service.

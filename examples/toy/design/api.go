@@ -1,7 +1,7 @@
 package design
 
 import (
-	_ "github.com/xeger/goa-vcr/plugin/vcr"
+	_ "github.com/crossnokaye/goa-vcr/plugin/vcr"
 	. "goa.design/goa/v3/dsl"
 )
 
