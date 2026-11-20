@@ -8,85 +8,114 @@ import (
 	"strings"
 
 	"goa.design/goa/v3/codegen"
-	"goa.design/goa/v3/codegen/service"
+	"goa.design/goa/v3/codegen/generator"
 	"goa.design/goa/v3/eval"
 	"goa.design/goa/v3/expr"
-	httpcodegen "goa.design/goa/v3/http/codegen"
 
 	"github.com/crossnokaye/goa-vcr/plugin/vcr/internal/vcrgen"
 )
 
 func init() {
-	codegen.RegisterPlugin("vcr", "gen", nil, Generate)
+	generator.RegisterPlugin("vcr", "gen", func() generator.Plugin {
+		p := &plugin{}
+		return generator.Plugin{Prepare: p.prepare, Generate: p.generate}
+	})
 }
 
-// Generate is invoked by `goa gen` and may append additional generated files.
-func Generate(genpkg string, roots []eval.Root, files []*codegen.File) ([]*codegen.File, error) {
+// plugin holds the state of one generation run. Goa's generator.Plan does not
+// expose its roots, so prepare records them for generate.
+type plugin struct {
+	genpkg string
+	roots  []eval.Root
+}
+
+func (p *plugin) prepare(genpkg string, roots []eval.Root) error {
+	p.genpkg = genpkg
+	p.roots = roots
+	return nil
+}
+
+// generate appends the VCR glue for every HTTP service in every Goa root.
+func (p *plugin) generate(plan *generator.Plan, files []*codegen.File) ([]*codegen.File, error) {
 	if os.Getenv("GOA_VCR_DEBUG") != "" {
-		var b strings.Builder
-		_, _ = fmt.Fprintf(&b, "goa-vcr plugin: genpkg=%s\n", genpkg)
-		_, _ = fmt.Fprintf(&b, "roots=%d\n", len(roots))
-		for i, r := range roots {
-			if rr, ok := r.(*expr.RootExpr); ok {
-				hasHTTP := rr.API != nil && rr.API.HTTP != nil
-				_, _ = fmt.Fprintf(&b, "%d: root=%s services=%d hasHTTP=%v\n", i, rr.EvalName(), len(rr.Services), hasHTTP)
-				for _, s := range rr.Services {
-					_, _ = fmt.Fprintf(&b, "  - %s\n", s.Name)
-				}
-			} else {
-				_, _ = fmt.Fprintf(&b, "%d: root=%T\n", i, r)
-			}
-		}
-		files = append(files, &codegen.File{
-			Path: filepath.Join(codegen.Gendir, "vcr_debug.txt"),
-			SectionTemplates: []*codegen.SectionTemplate{
-				{Name: "debug", Source: b.String()},
-			},
-		})
+		files = append(files, debugFile(p.genpkg, p.roots))
 	}
 
-	// Goa may provide multiple roots (e.g. when the design imports subpackages).
-	// Generate VCR glue for every HTTP service in every Goa root, mirroring how
-	// Goa iterates roots in its built-in generators.
 	seen := make(map[string]struct{})
-	for _, r := range roots {
+	for _, r := range p.roots {
 		root, ok := r.(*expr.RootExpr)
-		if !ok || root.API == nil {
+		if !ok || root.API == nil || root.API.HTTP == nil {
+			continue
+		}
+		httpPlan, ok := plan.HTTP(root)
+		if !ok {
 			continue
 		}
 
-		services := httpcodegen.NewServicesData(service.NewServicesData(root), root.API.HTTP)
-
 		// Deterministic service ordering per root.
-		names := make([]string, 0, len(root.Services))
-		for _, s := range root.Services {
-			names = append(names, s.Name)
-		}
-		sort.Strings(names)
+		services := append([]*expr.HTTPServiceExpr(nil), root.API.HTTP.Services...)
+		sort.Slice(services, func(i, j int) bool { return services[i].Name() < services[j].Name() })
 
-		for _, name := range names {
+		for _, hs := range services {
+			name := hs.Name()
 			if _, ok := seen[name]; ok {
 				continue
 			}
-			svc := services.Get(name) // lazily computes services.HTTPData[name]
-			if svc == nil || svc.Service == nil {
+			svc, ok := httpPlan.Service(hs)
+			if !ok || svc.Service == nil {
 				continue
 			}
-			spec := vcrgen.BuildServiceSpec(genpkg, svc)
+			spec := vcrgen.BuildServiceSpec(p.genpkg, svc)
 			f := vcrgen.RenderServiceVCR(spec)
 			cli := vcrgen.RenderServiceVCRCLI(spec)
-			// Ensure we import any extra packages required by the service types.
-			// This includes:
-			// - user types generated into separate packages via "struct:pkg:path"
-			// - meta types referenced via "struct:field:type" (e.g. types.UUID)
-			if len(f.SectionTemplates) > 0 {
-				service.AddServiceDataMetaTypeImports(f.SectionTemplates[0], svc.Service)
-				service.SetUserTypeImports(genpkg, svc.Service)
-				service.AddUserTypeImports(f.SectionTemplates[0], svc.Service)
-			}
+			// Goa retains imports per file, so borrow the service package's own
+			// imports: they cover user types placed in other packages via
+			// "struct:pkg:path" and meta types via "struct:field:type". Goa drops
+			// the ones the VCR file does not use.
+			addServiceImports(f, files, svc.Service.PathName)
 			files = append(files, f, cli)
 			seen[name] = struct{}{}
 		}
 	}
 	return files, nil
+}
+
+func addServiceImports(f *codegen.File, files []*codegen.File, servicePath string) {
+	if len(f.SectionTemplates) == 0 {
+		return
+	}
+	svcFile := filepath.Join(codegen.Gendir, servicePath, "service.go")
+	for _, src := range files {
+		if src.Path != svcFile || len(src.SectionTemplates) == 0 {
+			continue
+		}
+		if data, ok := src.SectionTemplates[0].Data.(map[string]any); ok {
+			if imports, ok := data["Imports"].([]*codegen.ImportSpec); ok {
+				codegen.AddImport(f.SectionTemplates[0], imports...)
+			}
+		}
+	}
+}
+
+func debugFile(genpkg string, roots []eval.Root) *codegen.File {
+	var b strings.Builder
+	_, _ = fmt.Fprintf(&b, "goa-vcr plugin: genpkg=%s\n", genpkg)
+	_, _ = fmt.Fprintf(&b, "roots=%d\n", len(roots))
+	for i, r := range roots {
+		if rr, ok := r.(*expr.RootExpr); ok {
+			hasHTTP := rr.API != nil && rr.API.HTTP != nil
+			_, _ = fmt.Fprintf(&b, "%d: root=%s services=%d hasHTTP=%v\n", i, rr.EvalName(), len(rr.Services), hasHTTP)
+			for _, s := range rr.Services {
+				_, _ = fmt.Fprintf(&b, "  - %s\n", s.Name)
+			}
+		} else {
+			_, _ = fmt.Fprintf(&b, "%d: root=%T\n", i, r)
+		}
+	}
+	return &codegen.File{
+		Path: filepath.Join(codegen.Gendir, "vcr_debug.txt"),
+		SectionTemplates: []*codegen.SectionTemplate{
+			{Name: "debug", Source: b.String()},
+		},
+	}
 }
