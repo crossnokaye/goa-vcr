@@ -7,7 +7,7 @@
 
 ### Try it on a service (minimal)
 
-`goa-vcr` currently targets Goa `v3.23.x`; `v3.25+` compatibility is deferred.
+`goa-vcr` targets Goa `v3.35.x`.
 
 The Goa plugin model is: your plugin must be linked into the generator binary that runs during `goa gen` ([plugin guide](https://pkg.go.dev/goa.design/plugins/v3)).
 
@@ -25,8 +25,8 @@ import _ "github.com/crossnokaye/goa-vcr/plugin/vcr"
 #   "not enough arguments in call to generator.Generate"
 # it means your installed `goa` binary is older/newer than the module.
 #
-# This repo pins goa to v3.30.0, so this is a safe invocation:
-go run goa.design/goa/v3/cmd/goa@v3.30.0 gen <design-import-path> -o .
+# This repo pins goa to v3.35.0, so this is a safe invocation:
+go run goa.design/goa/v3/cmd/goa@v3.35.0 gen <design-import-path> -o .
 ```
 
 ### Scenarios as Service layers
